@@ -11,7 +11,10 @@ services:
     command: >
       sh -c "python manage.py wait_for_db &&
              python manage.py migrate &&
-             python manage.py initadmin &&
+             python manage.py init_admin \
+               --username admin \
+               --email admin@admin.com \
+               --password 1234567 &&
              python manage.py runserver 0.0.0.0:8000"
     environment:
       - DB_HOST=db
