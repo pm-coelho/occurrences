@@ -9,9 +9,9 @@ RUN apk add --update --no-cache postgresql-client \
     && pip install -r /requirements.txt  \
     && apk del .tmp-build-deps
 
-RUN mkdir /occurrences
-WORKDIR /occurrences
-COPY ./occurrences /occurrences
+RUN mkdir /app
+WORKDIR /app
+COPY ./app /app
 
 RUN adduser -D user
 USER user
