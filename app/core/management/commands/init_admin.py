@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth import get_user_model
 
+
 class Command(BaseCommand):
     """
     Creates and admin user if it doesn't exist
@@ -21,7 +22,11 @@ class Command(BaseCommand):
         email = options['email']
         password = options['password']
         if not User.objects.filter(username=username).exists():
-            User.objects.create_superuser(username=username, email=email, password=password)
+            User.objects.create_superuser(
+                username=username,
+                email=email,
+                password=password
+            )
             self.stdout.write(
                 'Admin created: {} ({}) : {}'.format(username, email, password)
             )
