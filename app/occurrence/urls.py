@@ -5,7 +5,7 @@ from occurrence import views
 
 
 router = DefaultRouter()
-router.register('occurrence', views.OccurrenceViewSet)
+router.register('', views.OccurrenceViewSet)
 
 app_name = 'occurrence'
 

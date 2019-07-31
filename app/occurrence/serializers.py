@@ -1,13 +1,9 @@
 from rest_framework import serializers
 
-from occurrence.models import Occurrence, State
+from occurrence.models import Occurrence
 
 
 class OccurrenceSerializer(serializers.ModelSerializer):
-    author = serializers.PrimaryKeyRelatedField(
-        read_only=True,
-        default=serializers.CurrentUserDefault()
-    )
 
     class Meta:
         model = Occurrence
@@ -15,18 +11,34 @@ class OccurrenceSerializer(serializers.ModelSerializer):
             'id',
             'description',
             'author',
+            'state',
             'category',
             'created_at',
             'updated_at',
         )
         read_only_fields = ('id', 'author')
 
-    def create(self, validated_data):
-        occurrence = Occurrence(
-            description=validated_data['description'],
-            author=validated_data['author'],
-            state=State.NOT_VALIDATED,
-            category=validated_data['category'],
+
+class OccurrenceCreateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Occurrence
+        fields = (
+            'description',
+            'category',
+            'author',
+            'state',
         )
-        occurrence.save()
-        return occurrence
+        read_only_fields = ('author', 'state')
+
+
+class OccurrenceUpdateSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Occurrence
+        fields = (
+            'description',
+            'category',
+            'author',
+            'state',
+        )
