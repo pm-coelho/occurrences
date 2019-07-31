@@ -39,10 +39,21 @@ class OccurrenceViewSet(viewsets.GenericViewSet,
         """
         Return objects for the current authenticated user only except on admins
         """
+        queryset = self.queryset
+
+        if (self.action == 'list'):
+            author_filter = self.request.query_params.get('author', None)
+            if (author_filter):
+                queryset = queryset.filter(author=author_filter)
+
+            category_filter = self.request.query_params.get('category', None)
+            if (category_filter):
+                queryset = queryset.filter(category=category_filter)
+
         if (self.request.user.is_superuser):
-            return self.queryset
+            return queryset
         else:
-            return self.queryset.filter(author=self.request.user)
+            return queryset.filter(author=self.request.user)
 
     def get_serializer_class(self):
         """
