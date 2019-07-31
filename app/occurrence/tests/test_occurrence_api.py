@@ -254,6 +254,26 @@ class AdminOccurrenceAPITests(TestCase):
         self.assertEqual(len(res.data), 1)
         self.assertEqual(res.data[0]['category'], 'CONSTRUCTION')
 
+    def test_can_combine_filters(self):
+        user2 = get_user_model().objects.create_user(
+            'other',
+            '12345678'
+        )
+        Occurrence.objects.create(author=self.user, category='CONSTRUCTION')
+        Occurrence.objects.create(author=self.user, description='INCIDENT')
+        Occurrence.objects.create(author=user2, category='CONSTRUCTION')
+        Occurrence.objects.create(author=user2, description='INCIDENT')
+
+        res = self.client.get(OCCURRENCES_URL, {
+            'author': user2.id,
+            'category': 'CONSTRUCTION'
+        })
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(res.data), 1)
+        self.assertEqual(res.data[0]['category'], 'CONSTRUCTION')
+        self.assertEqual(res.data[0]['author'], user2.id)
+
     # POST endpoint tests
     def test_admin_can_create_occurrences(self):
         """Test user can create occurrences"""
