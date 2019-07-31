@@ -104,6 +104,20 @@ class PrivateOccurrenceApiTests(TestCase):
         self.assertEqual(len(res.data), 1)
         self.assertEqual(res.data[0]['description'], 'test_1')
 
+
+    def test_user_cannot_use_qs_to_get_other_user_occurrences(self):
+        user2 = get_user_model().objects.create_user(
+            'other',
+            '12345678'
+        )
+        Occurrence.objects.create(author=self.user, category='CONSTRUCTION')
+        Occurrence.objects.create(author=user2, description='ROAD_CONDITION')
+
+        res = self.client.get(OCCURRENCES_URL, {'author': user2.id})
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(res.data), 0)
+
     # POST endpoint tests
     def test_create_occurrence_successfull(self):
         """Test user can create occurrences"""
