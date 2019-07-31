@@ -104,7 +104,6 @@ class PrivateOccurrenceApiTests(TestCase):
         self.assertEqual(len(res.data), 1)
         self.assertEqual(res.data[0]['description'], 'test_1')
 
-
     def test_user_cannot_use_qs_to_get_other_user_occurrences(self):
         user2 = get_user_model().objects.create_user(
             'other',
