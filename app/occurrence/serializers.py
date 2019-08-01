@@ -1,9 +1,11 @@
 from rest_framework import serializers
+from drf_extra_fields.geo_fields import PointField
 
 from occurrence.models import Occurrence
 
 
 class OccurrenceSerializer(serializers.ModelSerializer):
+    location = PointField()
 
     class Meta:
         model = Occurrence
@@ -13,6 +15,7 @@ class OccurrenceSerializer(serializers.ModelSerializer):
             'author',
             'state',
             'category',
+            'location',
             'created_at',
             'updated_at',
         )
@@ -20,6 +23,7 @@ class OccurrenceSerializer(serializers.ModelSerializer):
 
 
 class OccurrenceCreateSerializer(serializers.ModelSerializer):
+    location = PointField()
 
     class Meta:
         model = Occurrence
@@ -28,11 +32,13 @@ class OccurrenceCreateSerializer(serializers.ModelSerializer):
             'category',
             'author',
             'state',
+            'location',
         )
         read_only_fields = ('author', 'state')
 
 
 class OccurrenceUpdateSerializer(serializers.ModelSerializer):
+    location = PointField()
 
     class Meta:
         model = Occurrence
@@ -41,4 +47,5 @@ class OccurrenceUpdateSerializer(serializers.ModelSerializer):
             'category',
             'author',
             'state',
+            'location',
         )

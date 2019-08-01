@@ -1,4 +1,5 @@
 from django.contrib.auth import get_user_model
+from django.contrib.gis.geos import Point
 from django.urls import reverse
 from django.test import TestCase
 
@@ -11,7 +12,6 @@ from occurrence.models import Occurrence
 OCCURRENCES_URL = reverse('occurrence:occurrence-list')
 
 
-# TODO: allow populate of authors
 class PublicOccurrenceApiTests(TestCase):
     """Test public endpoint on occurrence API"""
 
@@ -123,6 +123,10 @@ class PrivateOccurrenceApiTests(TestCase):
         payload = {
             'description': 'test_1',
             'category': 'CONSTRUCTION',
+            'location': {
+                'latitude': 1,
+                'longitude': 1,
+            },
         }
 
         self.client.post(OCCURRENCES_URL, payload)
@@ -138,7 +142,11 @@ class PrivateOccurrenceApiTests(TestCase):
         payload = {
             'description': 'test_1',
             'category': 'CONSTRUCTION',
-            'state': 'VALID'
+            'state': 'VALID',
+            'location': {
+                'latitude': 1,
+                'longitude': 1,
+            },
         }
 
         self.client.post(OCCURRENCES_URL, payload)
@@ -155,6 +163,10 @@ class PrivateOccurrenceApiTests(TestCase):
         payload = {
             'description': 'test_1',
             'category': 'NON_EXISTING',
+            'location': {
+                'latitude': 1,
+                'longitude': 1,
+            },
         }
 
         res = self.client.post(OCCURRENCES_URL, payload)
@@ -189,6 +201,10 @@ class PrivateOccurrenceApiTests(TestCase):
         payload = {
             'description': 'test_1',
             'category': 'CONSTRUCTION',
+            'location': {
+                'latitude': 1,
+                'longitude': 1,
+            },
         }
 
         res = self.client.put(
@@ -241,18 +257,59 @@ class AdminOccurrenceAPITests(TestCase):
         self.assertEqual(res.data[0]['author'], user2.id)
 
     def test_can_filter_by_category(self):
-        user2 = get_user_model().objects.create_user(
-            'other',
-            '12345678'
-        )
         Occurrence.objects.create(author=self.user, category='CONSTRUCTION')
-        Occurrence.objects.create(author=user2, description='ROAD_CONDITION')
+        Occurrence.objects.create(author=self.user, category='ROAD_CONDITION')
 
         res = self.client.get(OCCURRENCES_URL, {'category': 'CONSTRUCTION'})
 
         self.assertEqual(res.status_code, status.HTTP_200_OK)
         self.assertEqual(len(res.data), 1)
         self.assertEqual(res.data[0]['category'], 'CONSTRUCTION')
+
+    def test_can_filter_by_location(self):
+        Occurrence.objects.create(
+            author=self.user,
+            category='CONSTRUCTION',
+            location=Point(1, 1),
+        )
+        Occurrence.objects.create(
+            author=self.user,
+            category='ROAD_CONSTRUCTION',
+            location=Point(2, 2),
+        )
+
+        res = self.client.get(OCCURRENCES_URL, {'latitude': 1, 'longitude': 1})
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(res.data), 1)
+        self.assertEqual(res.data[0]['category'], 'CONSTRUCTION')
+
+    def test_can_filter_by_location_with_radius(self):
+        Occurrence.objects.create(
+            author=self.user,
+            category='CONSTRUCTION',
+            location=Point(40.2033, 8.4103),
+        )
+        Occurrence.objects.create(
+            author=self.user,
+            category='ROAD_CONSTRUCTION',
+            location=Point(41.1579, 8.6291),
+        )
+        Occurrence.objects.create(
+            author=self.user,
+            category='ROAD_CONSTRUCTION',
+            location=Point(40.7128, 74.0060),
+        )
+
+        res = self.client.get(
+            OCCURRENCES_URL,
+            {'latitude': 40.6405,
+             'longitude': 8.6538,
+             'radius': 500000}
+        )
+
+        self.assertEqual(res.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(res.data), 2)
 
     def test_can_combine_filters(self):
         user2 = get_user_model().objects.create_user(
@@ -280,6 +337,10 @@ class AdminOccurrenceAPITests(TestCase):
         payload = {
             'description': 'test_1',
             'category': 'CONSTRUCTION',
+            'location': {
+                'latitude': 1,
+                'longitude': 1,
+            },
         }
 
         self.client.post(OCCURRENCES_URL, payload)
@@ -340,6 +401,10 @@ class AdminOccurrenceAPITests(TestCase):
             'category': 'CONSTRUCTION',
             'state': 'RESOLVED',
             'author': user2.id,
+            'location': {
+                'latitude': 1,
+                'longitude': 1,
+            },
         }
 
         res = self.client.put(

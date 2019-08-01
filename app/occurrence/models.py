@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.gis.db import models as gis_model
 from django.conf import settings
 from enum import Enum
 
@@ -36,6 +37,7 @@ class Occurrence(models.Model):
     )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    location = gis_model.PointField(null=True)
 
     def __str__(self):
         return self.description
