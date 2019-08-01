@@ -26,8 +26,6 @@ services:
 
   db:
     image: mdillon/postgis:11-alpine
-    ports:
-      - "5432:5432"
     environment:
       - POSTGRES_DB=occurrences
       - POSTGRES_USER=postgres
