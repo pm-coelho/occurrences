@@ -1,0 +1,312 @@
+{
+	"info": {
+		"_postman_id": "1694c999-0994-4e9d-8601-3892244f3553",
+		"name": "occurrences",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "user",
+			"item": [
+				{
+					"name": "create user",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"username\": \"test_user\",\n\t\"password\": \"12345678\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/user/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"user",
+								""
+							],
+							"query": [
+								{
+									"key": "",
+									"value": "",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "occurrence",
+			"item": [
+				{
+					"name": "Create Occurrence",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{basic_user_password}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{basic_user}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"description\": \"this is a test\",\n\t\"category\": \"CONSTRUCTION\",\n\t\"location\": {\n\t\t\"latitude\": 1,\n\t\t\"longitude\": 1\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/occurrence/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"occurrence",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Partial Update Occurrence",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{admin_password}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"state\": \"VALIDATED\"\n}"
+						},
+						"url": {
+							"raw": "{{host}}/api/occurrence/1/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"occurrence",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Occurrence",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{admin_password}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "    {\n        \"description\": \"this is a test updated\",\n        \"category\": \"CONSTRUCTION\",\n        \"author\": 2,\n        \"state\": \"RESOLVED\",\n        \"location\": {\n        \t\"latitude\": 1,\n        \t\"longitude\": 1\n        }\n    }"
+						},
+						"url": {
+							"raw": "{{host}}/api/occurrence/1/",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"occurrence",
+								"1",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List occurrences normal",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{basic_user_password}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{basic_user}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/occurrence/?author=2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"occurrence",
+								""
+							],
+							"query": [
+								{
+									"key": "author",
+									"value": "2"
+								},
+								{
+									"key": "category",
+									"value": "CONSTRUCTION",
+									"disabled": true
+								},
+								{
+									"key": "latitude",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "longitude",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "radius",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "List occurrences admin",
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "{{admin_password}}",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "{{admin}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/api/occurrence/?author=2",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"api",
+								"occurrence",
+								""
+							],
+							"query": [
+								{
+									"key": "author",
+									"value": "2"
+								},
+								{
+									"key": "category",
+									"value": "CONSTRUCTION",
+									"disabled": true
+								},
+								{
+									"key": "latitude",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "longitude",
+									"value": "1",
+									"disabled": true
+								},
+								{
+									"key": "radius",
+									"value": "5",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
